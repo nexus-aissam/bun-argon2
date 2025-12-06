@@ -38,6 +38,7 @@
     "build:all": "bun run build && bun run build:ts",
     "prepublishOnly": "napi prepublish -t npm",
     "test": "bun test",
+    "bench": "bun run benchmarks/bench.ts",
     "lint": "eslint src",
     "clean": "rm -rf dist *.node npm"
   },
@@ -73,6 +74,7 @@
   "devDependencies": {
     "@napi-rs/cli": "^2.18.4",
     "@types/bun": "latest",
+    "argon2": "^0.44.0",
     "tsup": "^8.4.0",
     "typescript": "^5.9.0"
   }

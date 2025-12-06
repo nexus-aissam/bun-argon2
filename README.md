@@ -10,10 +10,25 @@ High-performance Argon2 password hashing for Bun and Node.js, built with Rust an
 
 The popular `argon2` npm package has broken native bindings when installed with Bun. This library provides a Bun-first alternative that's:
 
-- **Fast** - Pure Rust implementation with optimized native bindings
+- **Fast** - **1.33x faster** than the `argon2` npm package
 - **Safe** - Uses the battle-tested `argon2` Rust crate
 - **Typed** - Full TypeScript support with strict types
 - **Compatible** - Works with both Bun and Node.js
+
+## Benchmarks
+
+Tested on Apple M1 Pro with Bun 1.3.3:
+
+| Operation | bun-argon2 | argon2 (npm) | Difference |
+|-----------|------------|--------------|------------|
+| Hash (async) | 3.31 ms | 4.40 ms | **1.33x faster** |
+| Hash (sync) | 3.20 ms | N/A | - |
+| Verify (async) | 3.28 ms | 4.35 ms | **1.33x faster** |
+| Verify (sync) | 3.23 ms | N/A | - |
+
+> Benchmark settings: memoryCost=4096 KB, timeCost=2, parallelism=1
+>
+> Run benchmarks yourself: `bun run benchmarks/bench.ts`
 
 ## Installation
 
