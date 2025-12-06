@@ -1,0 +1,50 @@
+# Dependencies
+node_modules
+
+# Build output
+dist
+*.node
+npm/
+index.js
+index.d.ts
+
+# Rust build
+target/
+rust/target/
+.cargo-cache/
+Cargo.lock
+rust/Cargo.lock
+
+# Package files
+*.tgz
+
+# Code coverage
+coverage
+*.lcov
+
+# Logs
+logs
+*.log
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# Environment
+.env
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+
+# Caches
+.eslintcache
+.cache
+*.tsbuildinfo
+
+# IDEs
+.idea
+.vscode
+
+# macOS
+.DS_Store
+
+# Bun
+bun.lockb

@@ -1,0 +1,34 @@
+[package]
+name = "argon2-napi"
+version = "1.0.0"
+edition = "2021"
+license = "MIT"
+description = "High-performance Argon2 password hashing for Bun and Node.js"
+
+[lib]
+crate-type = ["cdylib"]
+path = "rust/src/lib.rs"
+
+[dependencies]
+# napi-rs bindings
+napi = { version = "2", features = ["async", "napi9"] }
+napi-derive = "2"
+
+# Argon2 implementation
+argon2 = "0.5"
+password-hash = { version = "0.5", features = ["rand_core"] }
+
+# Random number generation for salts
+rand = "0.8"
+
+# Async runtime for spawn_blocking
+tokio = { version = "1", features = ["rt", "sync"] }
+
+[build-dependencies]
+napi-build = "2"
+
+[profile.release]
+lto = true
+strip = true
+opt-level = 3
+codegen-units = 1

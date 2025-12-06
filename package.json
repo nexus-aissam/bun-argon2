@@ -1,0 +1,91 @@
+{
+  "name": "bun-argon2",
+  "version": "1.0.0",
+  "description": "High-performance Argon2 password hashing for Bun and Node.js",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "files": [
+    "dist",
+    "src",
+    "npm",
+    "*.node"
+  ],
+  "napi": {
+    "name": "argon2",
+    "triples": {
+      "defaults": true,
+      "additional": [
+        "aarch64-apple-darwin",
+        "aarch64-unknown-linux-gnu",
+        "aarch64-unknown-linux-musl"
+      ]
+    }
+  },
+  "scripts": {
+    "build": "napi build --platform --release",
+    "build:debug": "napi build --platform",
+    "build:ts": "tsup src/index.ts --format cjs,esm --dts --clean",
+    "build:all": "bun run build && bun run build:ts",
+    "prepublishOnly": "napi prepublish -t npm",
+    "test": "bun test",
+    "lint": "eslint src",
+    "clean": "rm -rf dist *.node npm"
+  },
+  "keywords": [
+    "argon2",
+    "argon2id",
+    "argon2i",
+    "argon2d",
+    "password",
+    "hash",
+    "hashing",
+    "crypto",
+    "security",
+    "bun",
+    "nodejs",
+    "rust",
+    "napi",
+    "native"
+  ],
+  "author": "Aissam Irhir <aissamirhir@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nexus-aissam/bun-argon2.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nexus-aissam/bun-argon2/issues"
+  },
+  "homepage": "https://github.com/nexus-aissam/bun-argon2#readme",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@napi-rs/cli": "^2.18.4",
+    "@types/bun": "latest",
+    "tsup": "^8.4.0",
+    "typescript": "^5.9.0"
+  },
+  "optionalDependencies": {
+    "@bun-argon2/darwin-arm64": "1.0.0",
+    "@bun-argon2/darwin-x64": "1.0.0",
+    "@bun-argon2/linux-x64-gnu": "1.0.0",
+    "@bun-argon2/linux-x64-musl": "1.0.0",
+    "@bun-argon2/linux-arm64-gnu": "1.0.0",
+    "@bun-argon2/linux-arm64-musl": "1.0.0",
+    "@bun-argon2/win32-x64-msvc": "1.0.0"
+  }
+}
