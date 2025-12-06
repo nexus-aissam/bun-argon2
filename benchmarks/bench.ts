@@ -222,6 +222,52 @@ async function main() {
   results.push({ category: "Verify (sync)", results: verifySyncResults });
 
   // ============================================
+  // STRESS TEST
+  // ============================================
+  console.log("\n📊 Stress Test (concurrent hashing)\n");
+
+  const CONCURRENT_OPS = 50;
+
+  // bun-argon2 stress test
+  const stressStart = performance.now();
+  const stressPromises = Array.from({ length: CONCURRENT_OPS }, (_, i) =>
+    bunArgon2.hash(`password${i}`, LOW_MEMORY_OPTIONS)
+  );
+  await Promise.all(stressPromises);
+  const bunStressTime = performance.now() - stressStart;
+  const bunStressThroughput = (CONCURRENT_OPS / bunStressTime) * 1000;
+  console.log(
+    `bun-argon2 (${CONCURRENT_OPS} concurrent)`.padEnd(35) +
+      `${bunStressTime.toFixed(2).padStart(8)} ms total  ${bunStressThroughput.toFixed(2).padStart(8)} ops/sec`
+  );
+
+  if (argon2) {
+    const argon2StressStart = performance.now();
+    const argon2StressPromises = Array.from({ length: CONCURRENT_OPS }, (_, i) =>
+      argon2!.hash(`password${i}`, {
+        memoryCost: LOW_MEMORY_OPTIONS.memoryCost,
+        timeCost: LOW_MEMORY_OPTIONS.timeCost,
+        parallelism: LOW_MEMORY_OPTIONS.parallelism,
+      })
+    );
+    await Promise.all(argon2StressPromises);
+    const argon2StressTime = performance.now() - argon2StressStart;
+    const argon2StressThroughput = (CONCURRENT_OPS / argon2StressTime) * 1000;
+    console.log(
+      `argon2 (${CONCURRENT_OPS} concurrent)`.padEnd(35) +
+        `${argon2StressTime.toFixed(2).padStart(8)} ms total  ${argon2StressThroughput.toFixed(2).padStart(8)} ops/sec`
+    );
+
+    const stressSpeedup = argon2StressTime / bunStressTime;
+    const stressFaster = stressSpeedup > 1;
+    const stressEmoji = stressFaster ? "🚀" : "🐢";
+    const stressComparison = stressFaster
+      ? `${stressSpeedup.toFixed(2)}x faster`
+      : `${(1 / stressSpeedup).toFixed(2)}x slower`;
+    console.log(`\n${stressEmoji} bun-argon2 is ${stressComparison} under stress`);
+  }
+
+  // ============================================
   // SUMMARY
   // ============================================
   console.log("\n" + "=".repeat(70));
