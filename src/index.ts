@@ -17,12 +17,21 @@
  */
 
 import type { Argon2Options, NapiArgon2Options, RawHashResult } from "./types";
-import { createRequire } from "module";
-import { join } from "path";
 import { existsSync } from "fs";
+import { join, dirname } from "path";
+import { fileURLToPath } from "url";
 
 // Re-export types
 export type { Argon2Options, Argon2Type, RawHashResult } from "./types";
+
+// Get current directory for ESM
+const getCurrentDir = () => {
+  try {
+    return dirname(fileURLToPath(import.meta.url));
+  } catch {
+    return __dirname;
+  }
+};
 
 // Platform-specific binary loading
 function loadNativeBinding() {
@@ -53,21 +62,23 @@ function loadNativeBinding() {
       throw new Error(`Unsupported platform: ${platform}-${arch}`);
   }
 
-  const require = createRequire(import.meta.url);
+  const currentDir = getCurrentDir();
 
   // Try loading from different locations
   const possiblePaths = [
-    // Development build (local)
-    join(__dirname, "..", `argon2.${targetName}.node`),
-    // Production (npm package)
-    `@bun-argon2/${targetName}`,
-    // Fallback local
+    // Same directory as this file (dist/)
+    join(currentDir, `argon2.${targetName}.node`),
+    // Parent directory (package root)
+    join(currentDir, "..", `argon2.${targetName}.node`),
+    // CWD (development)
     join(process.cwd(), `argon2.${targetName}.node`),
   ];
 
-  for (const path of possiblePaths) {
+  for (const modulePath of possiblePaths) {
     try {
-      return require(path);
+      if (existsSync(modulePath)) {
+        return require(modulePath);
+      }
     } catch {
       continue;
     }
